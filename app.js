@@ -50,7 +50,7 @@ function convertToSql(dbLog) {
 
   // Parse parameters
   const params = {};
-  const paramRegex = /@__(\w+?)_\d+='(.*?)'/g;
+  const paramRegex = /@(\w+?)='(.*?)'/g;
   let match;
   while ((match = paramRegex.exec(paramsString)) !== null) {
     params[match[1]] = match[2];
@@ -58,12 +58,17 @@ function convertToSql(dbLog) {
 
   // Replace parameter placeholders with actual values
   let finalSql = dbLog.replace(/^.*Parameters=\[.*?\].*$/m, '-- $&'); // Comment out the line containing parameters
-  for (const [key, value] of Object.entries(params)) {
-    const regex = new RegExp(`@__${key}_\\d+`, 'g');
-    const replacement = isNaN(value) ? `'${value}'` : value; // Check if value is a number
-    finalSql = finalSql.replace(regex, replacement);
+  const sqlLines = finalSql.split('\n');
+  for (let i = 0; i < sqlLines.length; i++) {
+    if (!sqlLines[i].startsWith('--')) {
+      for (const [key, value] of Object.entries(params)) {
+        const regex = new RegExp(`@${key}(?!\\w)`, 'g'); // Ensure exact match by using negative lookahead
+        const replacement = isNaN(value) ? `'${value}'` : value; // Check if value is a number
+        sqlLines[i] = sqlLines[i].replace(regex, replacement);
+      }
+    }
   }
-  return finalSql.trim(); // Combine trim and return
+  return sqlLines.join('\n').trim(); // Combine trim and return
 }
 
 // console.log(convertToSql(dbLog));
