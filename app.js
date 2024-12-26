@@ -4,11 +4,23 @@ const input1 = document.getElementById('input1');
 const input2 = document.getElementById('input2');
 const copyButton = document.getElementById('copyButton');
 
+// Restore the last value of input1 from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const savedInput1Value = localStorage.getItem('input1Value');
+    if (savedInput1Value) {
+        input1.value = savedInput1Value;
+        input2.value = convertToSql(savedInput1Value);
+    }
+});
+
 input1.addEventListener('input', async (e) => {
     const text = e.target.value;
     if (!text || !text.length) {
-      return;
+        return;
     }
+
+    // Save the current value of input1 to localStorage
+    localStorage.setItem('input1Value', text);
 
     input2.value = convertToSql(text);
     await copyToClipboard(input2.value);
