@@ -45,13 +45,13 @@ function convertToSql(dbLog) {
   }
 
   // Replace parameter placeholders with actual values
-  let finalSql = dbLog;
+  let finalSql = dbLog.replace(/^.*Parameters=\[.*?\].*$/m, '-- $&'); // Comment out the line containing parameters
   for (const [key, value] of Object.entries(params)) {
     const regex = new RegExp(`@__${key}_\\d+`, 'g');
-    finalSql = finalSql.replace(regex, value);
+    const replacement = isNaN(value) ? `'${value}'` : value; // Check if value is a number
+    finalSql = finalSql.replace(regex, replacement);
   }
-
-  return finalSql;
+  return finalSql.trim(); // Combine trim and return
 }
 
 // console.log(convertToSql(dbLog));
