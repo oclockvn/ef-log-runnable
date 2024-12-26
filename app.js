@@ -1,4 +1,4 @@
-import { extractParametersFromFirstLine, replaceParametersInQuery } from './src/utils/parameterParser.js';
+import { extractParametersFromText, replaceParametersInQuery } from './src/utils/parameterParser.js';
 import { copyToClipboard } from './src/utils/clipboard.js';
 
 const input1 = document.getElementById('input1');
@@ -7,9 +7,8 @@ const copyButton = document.getElementById('copyButton');
 
 input1.addEventListener('input', (e) => {
     const text = e.target.value;
-    const parameters = extractParametersFromFirstLine(text);
-    const queryPart = text.split('\n').slice(1).join('\n');
-    const result = replaceParametersInQuery(parameters, queryPart);
+    const parameters = extractParametersFromText(text);
+    const result = replaceParametersInQuery(parameters, text);
     input2.value = result;
 });
 
