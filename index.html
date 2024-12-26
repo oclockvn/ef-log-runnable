@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EF Log to SQL Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            gap: 20px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .textarea-container {
+            flex: 1;
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #ccc;
+            resize: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #646cff;
+        }
+
+        #copyButton {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #copyButton:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        #copyButton.copied {
+            background: #646cff;
+            color: white;
+            border-color: #646cff;
+        }
+    </style>
+</head>
+<body>
+    <div class="textarea-container">
+        <textarea id="input1" placeholder="Paste Entity Framework log here...&#10;Example:&#10;Executed DbCommand (0ms) [Parameters=[@__p_0='123'], CommandType='Text', CommandTimeout='30']&#10;SELECT * FROM Users WHERE Id = @__p_0"></textarea>
+    </div>
+    <div class="textarea-container">
+        <textarea id="input2" placeholder="Runnable SQL command will appear here..." readonly></textarea>
+        <button id="copyButton">Copy</button>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
