@@ -1,29 +1,39 @@
+import { extractParametersText } from './textParser.js';
+
 function isNumeric(str) {
-    // Remove quotes and trim whitespace
     str = str.replace(/['"]/g, '').trim();
-    // Check if it's a valid number (including negative and decimal)
     return !isNaN(str) && !isNaN(parseFloat(str));
 }
 
 function formatParameterValue(value) {
-    // Remove surrounding quotes
     const cleanValue = value.replace(/^'|'$/g, '');
     return isNumeric(cleanValue) ? cleanValue : value;
 }
 
-export function extractParametersFromFirstLine(text) {
-    const firstLine = text.split('\n')[0];
-    const paramRegex = /@__\w+_\d+=\'[^\']*\'/g;
-    const matches = firstLine.match(paramRegex) || [];
+function parseParameters(parametersText) {
+    const paramRegex = /@__\w+(?:_\d+)?=\'[^\']*\'(?:\s*\([^)]*\))?/g;
+    const matches = parametersText.match(paramRegex) || [];
     
     return matches.reduce((acc, param) => {
-        const [key, value] = param.split('=');
+        const [keyValue] = param.split('('); // Split to remove any type information
+        const [key, value] = keyValue.split('=');
         acc[key] = formatParameterValue(value);
         return acc;
     }, {});
 }
 
-export function replaceParametersInQuery(parameters, query) {
+export function extractParametersFromText(text) {
+    const parametersText = extractParametersText(text);
+    return parseParameters(parametersText);
+}
+
+export function replaceParametersInQuery(parameters, text) {
+    // Extract the query part (everything after the parameters line)
+    const lines = text.split('\n');
+    const queryLines = lines.filter(line => !line.includes('DbCommand [Parameters='));
+    const query = queryLines.join('\n').trim();
+
+    // Replace parameters in the query
     let result = query;
     Object.entries(parameters).forEach(([param, value]) => {
         const regex = new RegExp(param.replace('=', ''), 'g');
