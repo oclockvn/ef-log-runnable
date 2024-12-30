@@ -40,7 +40,7 @@ copyButton.addEventListener('click', async () => {
 });
 
 function convertToSql(dbLog) {
-  const paramsMatch = dbLog.match(/Parameters=\[(.*?)\]/);
+  const paramsMatch = dbLog.match(/Parameters=\[(.*)\]/);
 
   if (!paramsMatch) {
     return dbLog;
